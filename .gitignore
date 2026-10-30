@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project artifacts
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data / outputs
+data/
+*.csv
+*.json
+*.sqlite3
+*.db
+output/
+results/
+
+# Keep repo files tracked
+!.gitignore

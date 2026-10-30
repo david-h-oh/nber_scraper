@@ -1,0 +1,18 @@
+[project]
+name = "nber-scraper"
+version = "0.1.0"
+description = "Scrape NBER working papers and analyze AI mentions in their abstracts."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4",
+    "ipykernel",
+    "matplotlib",
+    "notebook",
+    "pandas",
+    "pyarrow",
+    "requests",
+]
+
+[tool.uv]
+package = false
