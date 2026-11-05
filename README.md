@@ -2,6 +2,8 @@
 
 This project collects metadata and abstracts for NBER working papers and explores how often the abstracts mention artificial intelligence (AI), including AI in connection with tasks.
 
+> **AI assistance disclaimer:** This project was developed with help from an AI coding assistant.
+
 ## Project structure
 
 - [`scripts/nber_scrape.py`](./scripts/nber_scrape.py) — scrapes NBER working-paper pages and saves records to Parquet.
@@ -28,7 +30,7 @@ From the repository root, run the scraper in the managed environment:
 uv run scripts/nber_scrape.py
 ```
 
-By default, it requests papers from `w26694` through `w35018` and writes the results to `data/nber_papers.parquet`. It saves batches of 10 records and waits a random 10–30 seconds between successful page requests.
+By default, it requests papers starting at `w0001` and continues until the first response that is not HTTP 200. Paper numbers below 10000 are zero-padded to four digits in the URL (for example, `w0001`); numbers from 10000 onward are unpadded. To stop at a specific paper number instead, pass `end_paper`; that number is included. The scraper writes to `data/nber_papers.parquet`, saves batches of 10 records, and waits a random 10–30 seconds between successful page requests.
 
 The scraper accepts optional arguments when called from Python:
 
@@ -36,14 +38,14 @@ The scraper accepts optional arguments when called from Python:
 from scripts.nber_scrape import scrape_nber_working_papers
 
 scrape_nber_working_papers(
-    start_paper=26694,
-    end_paper=26700,
+    start_paper=1,
+    end_paper=5,
     batch_size=10,
-    output_file="data/nber_papers.parquet",
+    output_file="data/nber_sample.parquet",
 )
 ```
 
-If the output file already contains records, the scraper starts at one more than its largest `Working Paper Number`, overriding `start_paper`. Choose a different `output_file` to start a separate collection. Pages that do not return HTTP 200 are skipped.
+By default, if the output file already contains records, the scraper resumes at one more than its largest `Working Paper Number`; with no existing records, it starts at paper 1. Passing `start_paper` explicitly starts at that number instead, and can append duplicate rows if those papers are already in the output. `Working Paper Number` is stored as a number, without leading zeroes. Choose a different `output_file` to start a separate collection. The first non-200 response ends the scrape.
 
 Each saved record has these columns:
 
@@ -54,6 +56,11 @@ Each saved record has these columns:
 | `Authors` | Author names |
 | `Date` | Issue date shown on the NBER page |
 | `Abstract` | Paper abstract |
+| `Citation` | NBER-formatted citation |
+| `Published` | Whether the page lists a published version |
+| `Published Version` | Published-version citation, when listed |
+| `Topics` | Topic names listed for the paper, separated by semicolons |
+| `Programs` | Program names listed for the paper, separated by semicolons |
 
 ## Explore the data
 
